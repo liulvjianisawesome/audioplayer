@@ -103,14 +103,24 @@ export default {
       this.audio.pause()
     },
     getSong () {
-      let xhr = new XMLHttpRequest()
-      xhr.open('get', 'http://api.jirengu.com/fm/getSong.php?channel=' + this.channels[this.curIndex].channel_id)
-      xhr.onload = () => {
-        this.pause()
-        this.song = JSON.parse(xhr.responseText).song[0]
-        return
+      new Promise((resolve,reject) => {
+        let xhr = new XMLHttpRequest()
+        xhr.open('get', 'http://api.jirengu.com/fm/getSong.php?channel=' + this.channels[this.curIndex].channel_id)
+        xhr.onload = () => {
+          this.pause()
+          this.song = JSON.parse(xhr.responseText).song[0]
+          resolve()
       }
       xhr.send()
+      }).then(() => {
+        let xhr = new XMLHttpRequest()
+        xhr.open('get', 'http://jirenguapi.applinzi.com/fm/getLyric.php?&sid=' + this.song.sid)
+        xhr.onload = () => {
+          this.fullLyric = JSON.parse(xhr.responseText).lyric
+          console.log(this.fullLyric)
+        }
+        xhr.send()
+      })
     },
     skip(event) {
       this.progressWidth = event.offsetX
@@ -146,7 +156,7 @@ export default {
           this.song = JSON.parse(xhr.responseText).song[0]
           resolve()
         }
-      xhr.send()
+        xhr.send()
       }).then(() => {
           let xhr = new XMLHttpRequest()
           xhr.open('get', 'http://jirenguapi.applinzi.com/fm/getLyric.php?&sid=' + this.song.sid)
@@ -154,7 +164,7 @@ export default {
             this.fullLyric = JSON.parse(xhr.responseText).lyric
             console.log(this.fullLyric)
         }
-      xhr.send()
+        xhr.send()
       })
     })
   }
