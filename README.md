@@ -1,7 +1,8 @@
 # audioplayer
 
-> A Vue.js project
+> A Vue.js project  
 
+[预览](https://q123321.github.io/audioplayer/dist/index.html)
 ## Build Setup
 
 ``` bash
